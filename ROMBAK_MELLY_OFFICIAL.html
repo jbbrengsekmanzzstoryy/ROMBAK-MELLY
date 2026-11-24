@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#03050a">
+<title>ROMBAK MELLY OFFICIAL v7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Material+Icons+Round&family=Rajdhani:wght@500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<!-- FIREBASE SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyATynvJPbg6G8ed6wTEI2eV7c9GB9OyrLw",
+    authDomain: "manzz-007.firebaseapp.com",
+    databaseURL: "https://manzz-007-default-rtdb.firebaseio.com",
+    projectId: "manzz-007",
+    storageBucket: "manzz-007.firebasestorage.app",
+    messagingSenderId: "1037229229370",
+    appId: "1:1037229229370:web:bf75391f72160fd1bebc03",
+    measurementId: "G-022GKR8HLC"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  window.firebaseDB = database;
+  window.firebaseRef = ref;
+  window.firebaseSet = set;
+</script>
+
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+:root{
+  --bg:#03050a;--bg2:#0a0f1c;
+  --card:rgba(13, 20, 33, 0.7);
+  --line:rgba(0, 243, 255, 0.2);
+  --txt:#f0f6ff;--muted:#6b7c99;
+  --acc:#00f3ff;--acc2:#ff00ea;--acc3:#00ff88;
+  --danger:#ff0044;--warn:#ffb800;
+  --rarity-common:#a0a0a0;
+  --rarity-rare:#00aaff;
+  --rarity-epic:#aa00ff;
+  --rarity-legendary:#ffaa00;
+  --r:20px;
+}
+html,body{height:100%}
+body{
+  font-family:'Rajdhani',sans-serif;
+  background:var(--bg);color:var(--txt);overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+.material-icons-round{font-family:'Material Icons Round';font-weight:normal;font-style:normal;font-size:22px;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;-webkit-font-feature-settings:'liga';-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:0;height:0}
+
+/* ===== DYNAMIC BACKGROUND ===== */
+.bgfx{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(circle at 50% 0%, #0c1428 0%, #03050a 80%)}
+.bgfx span{position:absolute;border-radius:50%;filter:blur(100px);opacity:.3;animation:floaty 12s ease-in-out infinite alternate}
+.bgfx span:nth-child(1){width:400px;height:400px;background:var(--acc);top:-150px;left:-100px}
+.bgfx span:nth-child(2){width:300px;height:300px;background:var(--acc2);bottom:-100px;right:-100px;animation-delay:-5s}
+.bgfx span:nth-child(3){width:250px;height:250px;background:var(--acc3);top:40%;left:40%;animation-delay:-2s}
+@keyframes floaty{0%{transform:translate(0,0) scale(1)}100%{transform:translate(50px,-50px) scale(1.4)}}
+
+/* ===== AUTH ===== */
+.auth{position:relative;z-index:2;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.auth.hidden{display:none}
+.auth-card{width:100%;max-width:420px;background:rgba(8, 12, 20, 0.85);border:1px solid var(--line);border-radius:24px;padding:30px 24px;backdrop-filter:blur(30px);box-shadow:0 0 40px rgba(0, 243, 255, 0.15);animation:pop .6s cubic-bezier(.2,.9,.3,1.3);position:relative;overflow:hidden}
+.auth-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg, transparent, var(--acc), var(--acc2), transparent);animation:slide 3s linear infinite}
+@keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+@keyframes pop{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+.auth-logo{width:70px;height:70px;border-radius:20px;margin:0 auto 16px;display:grid;place-items:center;background:linear-gradient(135deg, rgba(0,243,255,0.1), rgba(255,0,234,0.1));border:1px solid var(--acc);box-shadow:0 0 20px rgba(0,243,255,0.3);animation:pulseGlow 2s infinite alternate}
+@keyframes pulseGlow{from{box-shadow:0 0 10px rgba(0,243,255,0.3)}to{box-shadow:0 0 30px rgba(0,243,255,0.8)}}
+.auth-logo .material-icons-round{font-size:36px;color:var(--acc)}
+.auth-card h2{text-align:center;font-size:24px;letter-spacing:1px;font-weight:700;text-transform:uppercase}
+.auth-card h2 span{background:linear-gradient(90deg,var(--acc),var(--acc2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.auth-sub{text-align:center;color:var(--muted);font-size:12px;margin:6px 0 20px;letter-spacing:1px}
+.auth-tabs{display:flex;background:rgba(0,0,0,0.5);border-radius:12px;padding:5px;margin-bottom:20px;border:1px solid rgba(255,255,255,0.05)}
+.auth-tab{flex:1;border:none;background:none;color:var(--muted);font-family:inherit;font-weight:700;font-size:14px;padding:10px;border-radius:8px;cursor:pointer;transition:.3s}
+.auth-tab.active{background:rgba(0, 243, 255, 0.1);color:var(--acc);box-shadow:0 0 10px rgba(0,243,255,0.1)}
+.auth-form{display:none;animation:fadeUp .4s ease}
+.auth-form.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== FIELDS ===== */
+.fld{display:flex;align-items:center;gap:12px;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;margin-bottom:12px;transition:.3s}
+.fld:focus-within{border-color:var(--acc);box-shadow:0 0 15px rgba(0, 243, 255, 0.15)}
+.fld>.material-icons-round{font-size:20px;color:var(--muted);transition:.3s}
+.fld:focus-within>.material-icons-round{color:var(--acc)}
+.fld input,.fld textarea,.fld select{flex:1;background:none;border:none;outline:none;color:var(--txt);font-family:inherit;font-size:15px;font-weight:500;width:100%}
+.fld textarea{resize:vertical;line-height:1.6;min-height:120px;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--acc3)}
+.eye{background:none;border:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;padding:2px}
+
+/* ===== BUTTONS ===== */
+.btn{width:100%;border:none;border-radius:12px;padding:14px;font-family:inherit;font-weight:700;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s;letter-spacing:1px;text-transform:uppercase;position:relative;overflow:hidden}
+.btn:active{transform:scale(.97)}
+.btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(to right,rgba(255,255,255,0) 0%,rgba(255,255,255,0.3) 50%,rgba(255,255,255,0) 100%);transform:rotate(45deg);animation:shine 3s infinite}
+@keyframes shine{0%{left:-100%}100%{left:100%}}
+.btn-primary{background:linear-gradient(90deg, var(--acc), #0099ff);color:#000;box-shadow:0 0 20px rgba(0,243,255,0.4)}
+.btn-secondary{background:linear-gradient(90deg, var(--acc2), #9900ff);color:#fff;box-shadow:0 0 20px rgba(255,0,234,0.4)}
+.btn-ghost{background:rgba(255,255,255,0.05);color:var(--txt);border:1px solid rgba(255,255,255,0.1)}
+.btn-danger{background:linear-gradient(90deg, var(--danger), #ff0055);color:#fff;box-shadow:0 0 20px rgba(255,0,68,0.4)}
+.btn-sm{padding:10px 14px;font-size:12px;border-radius:10px;width:auto}
+.btn .material-icons-round{font-size:20px;z-index:1}
+
+/* ===== APP SHELL ===== */
+.app{position:relative;z-index:1;max-width:560px;margin:0 auto;min-height:100vh;padding-bottom:110px}
+.app.hidden{display:none}
+.topbar{position:sticky;top:0;z-index:60;display:flex;align-items:center;gap:12px;padding:14px 16px;background:rgba(3,5,10,0.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--line)}
+.ic-btn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:rgba(0,243,255,0.05);color:var(--acc);display:grid;place-items:center;cursor:pointer;transition:.3s;flex-shrink:0;position:relative}
+.ic-btn:hover{background:rgba(0,243,255,0.15);box-shadow:0 0 15px rgba(0,243,255,0.3)}
+.badge{position:absolute;top:-5px;right:-5px;background:var(--danger);color:#fff;font-size:10px;font-weight:800;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;border:2px solid var(--bg);box-shadow:0 0 10px var(--danger);animation:popBadge 1s infinite alternate}
+@keyframes popBadge{from{transform:scale(1)}to{transform:scale(1.2)}}
+.brand{display:flex;align-items:center;gap:10px;flex:1;min-width:0}
+.brand-logo{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;background:linear-gradient(135deg,var(--acc),var(--acc2));box-shadow:0 0 15px rgba(0,243,255,0.3)}
+.brand-logo .material-icons-round{font-size:20px;color:#000;animation:spinSlow 5s linear infinite}
+@keyframes spinSlow{100%{transform:rotate(360deg)}}
+.brand h1{font-size:14px;font-weight:700;letter-spacing:1px;line-height:1.1}
+.brand p{font-size:9px;color:var(--acc);font-weight:700;letter-spacing:2px}
+.poin-chip{display:flex;align-items:center;gap:6px;background:rgba(0, 255, 136, 0.1);border:1px solid rgba(0, 255, 136, 0.3);padding:8px 12px;border-radius:12px;flex-shrink:0;box-shadow:0 0 15px rgba(0,255,136,0.1);animation:pulseGreen 2s infinite alternate}
+@keyframes pulseGreen{from{box-shadow:0 0 5px rgba(0,255,136,0.2)}to{box-shadow:0 0 15px rgba(0,255,136,0.6)}}
+.poin-chip .material-icons-round{font-size:16px;color:var(--acc3)}
+.poin-chip b{font-size:14px;font-weight:700;color:var(--acc3);font-family:'Share Tech Mono',monospace}
+
+/* ===== PAGES ===== */
+.page{display:none;padding:20px 16px;animation:pageIn .4s cubic-bezier(.2,.8,.3,1)}
+.page.active{display:block}
+@keyframes pageIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+
+/* HERO CYBERPUNK */
+.hero{position:relative;overflow:hidden;border-radius:20px;padding:24px 20px;background:linear-gradient(135deg, rgba(0,243,255,0.05), rgba(255,0,234,0.05));border:1px solid var(--line);box-shadow:0 10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,243,255,0.05);margin-bottom:20px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;position:relative;z-index:1}
+.hero-greet{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:4px;letter-spacing:1px}
+.hero-title{font-size:28px;font-weight:700;letter-spacing:1px;background:linear-gradient(90deg,#fff,var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 20px rgba(0,243,255,0.3)}
+.role-badge{display:inline-block;margin-top:8px;font-size:10px;font-weight:700;letter-spacing:1.5px;padding:4px 12px;border-radius:6px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);text-transform:uppercase}
+.role-badge.developer{background:linear-gradient(90deg,var(--acc2),#9900ff);border-color:transparent;color:#fff;box-shadow:0 0 10px rgba(255,0,234,0.5)}
+.role-badge.admin{background:linear-gradient(90deg,var(--danger),#ff7a45);border-color:transparent;color:#fff}
+.role-badge.premium{background:linear-gradient(90deg,var(--warn),#ff7a45);border-color:transparent;color:#000}
+.role-badge.reseller{background:linear-gradient(90deg,var(--acc),#0099ff);border-color:transparent;color:#000}
+.hero-poin{text-align:center;background:rgba(0,0,0,0.6);border:1px solid var(--acc3);border-radius:14px;padding:10px 16px;min-width:80px;position:relative;z-index:1}
+.hero-poin .material-icons-round{font-size:20px;color:var(--acc3)}
+.hero-poin b{display:block;font-size:22px;font-weight:700;line-height:1.1;margin-top:2px;color:var(--acc3);font-family:'Share Tech Mono',monospace}
+.hero-poin small{font-size:8px;letter-spacing:1.5px;color:var(--muted);font-weight:700}
+
+/* ROMBAK ACTIONS */
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:20px}
+.action-btn{position:relative;overflow:hidden;border-radius:16px;padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(0,0,0,0.4);cursor:pointer;transition:.3s;font-family:inherit}
+.action-btn:hover{transform:translateY(-3px)}
+.action-btn .material-icons-round{font-size:32px;filter:drop-shadow(0 0 10px currentColor)}
+.action-btn span{font-size:14px;font-weight:700;letter-spacing:1px}
+.action-btn small{font-size:10px;color:var(--muted);font-weight:600}
+.action-rombak{border-color:var(--acc);color:var(--acc);box-shadow:inset 0 0 20px rgba(0,243,255,0.1)}
+.action-rombak:hover{background:rgba(0,243,255,0.1);box-shadow:0 0 20px rgba(0,243,255,0.3)}
+.action-auto{border-color:var(--acc2);color:var(--acc2);box-shadow:inset 0 0 20px rgba(255,0,234,0.1)}
+.action-auto:hover{background:rgba(255,0,234,0.1);box-shadow:0 0 20px rgba(255,0,234,0.3)}
+
+/* AUTO ROMBAK WIDGET */
+.auto-widget{background:linear-gradient(90deg, rgba(255,0,234,0.15), rgba(0,0,0,0.6));border:1px solid var(--acc2);border-radius:16px;padding:16px;margin-bottom:20px;display:flex;align-items:center;gap:15px;box-shadow:0 0 20px rgba(255,0,234,0.2);animation:pulseBorder 2s infinite alternate}
+@keyframes pulseBorder{from{border-color:rgba(255,0,234,0.3)}to{border-color:rgba(255,0,234,1)}}
+.auto-widget-ic{width:46px;height:46px;border-radius:12px;background:rgba(255,0,234,0.2);display:grid;place-items:center;color:var(--acc2);animation:spinSlow 3s linear infinite}
+.auto-widget-ic .material-icons-round{font-size:26px}
+.auto-widget-info{flex:1}
+.auto-widget-info h4{font-size:14px;color:var(--acc2);font-weight:700;letter-spacing:1px}
+.auto-widget-info p{font-size:11px;color:var(--muted);margin-top:2px}
+.auto-widget-timer{font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;color:#fff;text-shadow:0 0 10px var(--acc2)}
+
+/* QUICK ACTIONS */
+.quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
+.quick-card{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;color:var(--txt);font-family:inherit;font-size:11px;font-weight:700;cursor:pointer;transition:.3s;text-align:center}
+.quick-card:hover{background:rgba(0,243,255,0.05);border-color:var(--acc);transform:translateY(-2px)}
+.quick-card .material-icons-round{font-size:24px;color:var(--acc);transition:.3s}
+.quick-card:hover .material-icons-round{transform:scale(1.2)}
+
+/* SECTION HEAD */
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin:0 4px 12px}
+.sec-head h3{font-size:16px;font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:8px;text-transform:uppercase}
+.sec-head h3::before{content:'';display:inline-block;width:4px;height:16px;background:var(--acc);box-shadow:0 0 10px var(--acc)}
+.pill{font-size:11px;font-weight:700;padding:4px 12px;border-radius:6px;background:rgba(0,243,255,0.1);color:var(--acc);border:1px solid var(--acc)}
+
+/* LIST ITEMS */
+.list{display:flex;flex-direction:column;gap:12px}
+.item{background:rgba(13,20,33,0.8);border:1px solid rgba(255,255,255,0.05);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;transition:.3s;animation:itemIn .4s ease both}
+.item:hover{background:rgba(0,243,255,0.05);border-color:rgba(0,243,255,0.2)}
+@keyframes itemIn{from{opacity:0;transform:translateX(-15px)}to{opacity:1;transform:none}}
+.item-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;background:rgba(0,243,255,0.1);border:1px solid var(--acc)}
+.item-ic .material-icons-round{font-size:22px;color:var(--acc)}
+.item-body{flex:1;min-width:0}
+.item-body h4{font-size:15px;font-weight:700;white-space:normal;word-break:break-word;line-height:1.3}
+.item-body p{font-size:12px;color:var(--muted);margin-top:4px;display:flex;align-items:center;gap:5px;font-weight:500}
+.item-act{display:flex;gap:8px;flex-shrink:0}
+.mini-btn{width:36px;height:36px;border-radius:10px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--txt);display:grid;place-items:center;cursor:pointer;transition:.3s}
+.mini-btn:hover{background:rgba(0,243,255,0.2);border-color:var(--acc);color:var(--acc)}
+.mini-btn.danger:hover{background:rgba(255,0,68,0.2);border-color:var(--danger);color:var(--danger)}
+.empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px;font-weight:500}
+.empty .material-icons-round{font-size:50px;opacity:.3;display:block;margin-bottom:12px;color:var(--acc)}
+
+/* DEPOSIT UI */
+.paket-grid{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.paket{position:relative;overflow:hidden;background:linear-gradient(90deg, rgba(13,20,33,0.9), rgba(0,243,255,0.05));border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:20px;cursor:pointer;transition:.3s;font-family:inherit;color:var(--txt);display:flex;justify-content:space-between;align-items:center;text-align:left}
+.paket::before{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.1),transparent);transform:skewX(-20deg);animation:shineSweep 3s infinite}
+@keyframes shineSweep{0%{left:-100%}100%{left:200%}}
+.paket:hover{border-color:var(--acc);background:linear-gradient(90deg, rgba(0,243,255,0.1), rgba(13,20,33,0.9));transform:translateX(5px);box-shadow:-5px 0 20px rgba(0,243,255,0.3)}
+.paket-left{display:flex;flex-direction:column;gap:4px;position:relative;z-index:1}
+.paket b{font-size:24px;font-weight:700;color:var(--acc3);font-family:'Share Tech Mono',monospace;text-shadow:0 0 10px rgba(0,255,136,0.3)}
+.paket small{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px}
+.paket-right{text-align:right;border-left:1px dashed rgba(255,255,255,0.2);padding-left:20px;position:relative;z-index:1}
+.paket .harga{display:block;font-size:18px;font-weight:700;color:var(--acc)}
+.paket .harga small{display:block;font-size:9px;color:var(--muted);margin-top:2px}
+
+/* TRANSAKSI UI */
+.receipt-card{background:rgba(13,20,33,0.9);border:1px solid rgba(0,243,255,0.3);border-radius:16px;padding:20px;position:relative;overflow:hidden;margin-bottom:12px;animation:itemIn 0.5s ease}
+.receipt-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:4px;background:var(--acc);box-shadow:0 0 15px var(--acc);animation:scanLine 2s linear infinite}
+@keyframes scanLine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.receipt-header{display:flex;justify-content:space-between;align-items:center;border-bottom:1px dashed rgba(255,255,255,0.1);padding-bottom:12px;margin-bottom:12px}
+.receipt-header h4{font-size:16px;color:var(--acc);font-family:'Share Tech Mono',monospace}
+.receipt-header span{font-size:11px;background:var(--warn);color:#000;padding:3px 8px;border-radius:4px;font-weight:800;animation:pulse 1s infinite}
+.receipt-body{display:flex;justify-content:space-between;margin-bottom:15px}
+.receipt-body div{display:flex;flex-direction:column;gap:4px}
+.receipt-body span{font-size:11px;color:var(--muted);font-weight:600}
+.receipt-body b{font-size:14px;font-weight:700}
+.receipt-actions{display:flex;gap:10px}
+.btn-approve{flex:1;background:rgba(0,255,136,0.1);border:1px solid var(--acc3);color:var(--acc3);padding:12px;border-radius:10px;font-family:inherit;font-weight:700;cursor:pointer;transition:.3s;display:flex;justify-content:center;align-items:center;gap:6px}
+.btn-approve:hover{background:var(--acc3);color:#000;box-shadow:0 0 15px var(--acc3)}
+.btn-reject{flex:1;background:rgba(255,0,68,0.1);border:1px solid var(--danger);color:var(--danger);padding:12px;border-radius:10px;font-family:inherit;font-weight:700;cursor:pointer;transition:.3s;display:flex;justify-content:center;align-items:center;gap:6px}
+.btn-reject:hover{background:var(--danger);color:#fff;box-shadow:0 0 15px var(--danger)}
+
+/* PROFILE UI */
+.prof-card{position:relative;background:rgba(13,20,33,0.8);border:1px solid var(--acc);border-radius:24px;padding:30px 20px;text-align:center;overflow:hidden;margin-bottom:20px;box-shadow:0 0 40px rgba(0,243,255,0.1)}
+.prof-card::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg, transparent, rgba(0,243,255,0.15), transparent, rgba(255,0,234,0.15), transparent);animation:spin 8s linear infinite;z-index:0}
+@keyframes spin{100%{transform:rotate(360deg)}}
+.prof-card>*{position:relative;z-index:1}
+.prof-avatar{width:110px;height:110px;border-radius:50%;margin:0 auto 16px;position:relative;background:#03050a;display:grid;place-items:center;overflow:hidden;border:3px solid var(--acc);box-shadow:0 0 30px rgba(0,243,255,0.4);cursor:pointer;transition:.3s;animation:avatarFloat 3s ease-in-out infinite alternate}
+@keyframes avatarFloat{from{transform:translateY(0)}to{transform:translateY(-10px)}}
+.prof-avatar:hover{transform:scale(1.05)}
+.prof-avatar img{width:100%;height:100%;object-fit:cover}
+.prof-avatar .material-icons-round{font-size:50px;color:var(--acc)}
+.prof-avatar .cam{position:absolute;right:0;bottom:0;width:36px;height:36px;border-radius:50%;background:var(--acc);display:grid;place-items:center;border:3px solid #03050a}
+.prof-avatar .cam .material-icons-round{font-size:18px;color:#000}
+.prof-name{font-size:24px;font-weight:700;letter-spacing:2px;color:#fff;text-shadow:0 0 15px rgba(255,255,255,0.5);margin-bottom:4px}
+.prof-user{font-size:14px;color:var(--acc);font-family:'Share Tech Mono',monospace;margin-bottom:15px}
+.prof-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.prof-stat-box{background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:12px}
+.prof-stat-box span{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.prof-stat-box b{display:block;font-size:16px;color:var(--acc3);font-family:'Share Tech Mono',monospace;margin-top:4px}
+.btn-prof{width:100%;background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:16px;color:#fff;font-family:inherit;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:.3s;margin-bottom:10px}
+.btn-prof:hover{background:rgba(0,243,255,0.1);border-color:var(--acc);color:var(--acc)}
+.btn-prof.danger:hover{background:rgba(255,0,68,0.1);border-color:var(--danger);color:var(--danger)}
+
+/* BOTTOM NAV */
+.bottomnav{position:fixed;bottom:0;left:0;right:0;z-index:70;display:flex;justify-content:center;padding:0 16px 16px}
+.bottomnav-inner{display:flex;width:100%;max-width:520px;background:rgba(8,12,20,0.95);backdrop-filter:blur(30px);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(0,243,255,0.1)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px;border:none;background:none;color:var(--muted);font-size:10px;font-weight:700;border-radius:12px;cursor:pointer;transition:.3s;font-family:inherit;letter-spacing:0.5px}
+.nav-item .material-icons-round{font-size:22px;transition:.3s}
+.nav-item.active{background:rgba(0,243,255,0.15);color:var(--acc);box-shadow:inset 0 0 10px rgba(0,243,255,0.2)}
+.nav-item.active .material-icons-round{filter:drop-shadow(0 0 8px var(--acc))}
+
+/* DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:140;opacity:0;pointer-events:none;transition:.3s}
+.drawer-overlay.show{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;left:0;bottom:0;width:300px;max-width:85vw;z-index:150;background:rgba(8,12,20,0.98);border-right:1px solid var(--line);transform:translateX(-102%);transition:transform .4s cubic-bezier(.2,.9,.3,1);overflow-y:auto;padding:24px 16px}
+.drawer.show{transform:none}
+.drawer-head{display:flex;align-items:center;gap:14px;padding-bottom:20px;border-bottom:1px solid rgba(255,255,255,0.08);margin-bottom:20px}
+.drawer-avatar{width:50px;height:50px;border-radius:14px;overflow:hidden;flex-shrink:0;background:linear-gradient(135deg,var(--acc),var(--acc2));display:grid;place-items:center}
+.drawer-avatar img{width:100%;height:100%;object-fit:cover}
+.drawer-avatar .material-icons-round{color:#000;font-size:26px}
+.drawer-head h4{font-size:15px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drawer-head p{font-size:12px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dr-label{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);margin:20px 12px 10px}
+.dr-item{width:100%;display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;border:none;background:none;color:var(--txt);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;transition:.3s;text-align:left;margin-bottom:4px}
+.dr-item .material-icons-round{font-size:22px;color:var(--muted);transition:.3s}
+.dr-item:hover{background:rgba(255,255,255,0.05)}
+.dr-item:hover .material-icons-round{color:var(--acc)}
+.dr-item.tg .material-icons-round{color:var(--acc)}
+.dr-item.dev .material-icons-round{color:var(--acc2)}
+.dr-item.out{color:var(--danger);margin-top:20px;border-top:1px solid rgba(255,0,68,0.2);border-radius:0}
+.dr-item.out .material-icons-round{color:var(--danger)}
+.dr-item.out:hover{background:rgba(255,0,68,0.1)}
+
+/* MODAL & NOTIFIKASI KEREN */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:.3s}
+.modal-overlay.show{opacity:1;pointer-events:auto}
+.modal-card{width:100%;max-width:400px;max-height:88vh;overflow-y:auto;background:rgba(10,15,25,0.98);border:1px solid var(--acc);border-radius:20px;padding:24px;transform:scale(.9);transition:.3s cubic-bezier(.2,.9,.3,1.3);box-shadow:0 0 40px rgba(0,243,255,0.2)}
+.modal-overlay.show .modal-card{transform:scale(1)}
+.modal-title{font-size:20px;font-weight:700;margin-bottom:6px;text-align:center;letter-spacing:1px}
+.modal-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:20px;line-height:1.6;font-weight:500}
+
+/* NOTIFIKASI HOLOGRAM */
+.notif-hologram{background:linear-gradient(135deg, rgba(0,243,255,0.1), rgba(255,0,234,0.1));border:1px solid var(--acc);border-radius:12px;padding:15px;margin-bottom:10px;position:relative;overflow:hidden;animation:glitch 3s infinite}
+@keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-2px,2px)}40%{transform:translate(-2px,-2px)}60%{transform:translate(2px,2px)}80%{transform:translate(2px,-2px)}}
+.notif-hologram::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.05) 2px, rgba(255,255,255,0.05) 4px);pointer-events:none}
+.notif-text{font-size:13px;font-weight:600;color:#fff;position:relative;z-index:1}
+.notif-time{font-size:10px;color:var(--acc);margin-top:5px;display:block;position:relative;z-index:1}
+
+/* CUSTOM SELECT GRID */
+.grid-select{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:20px}
+.grid-opt{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:15px;text-align:center;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.grid-opt::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle, rgba(255,0,234,0.2) 0%, transparent 70%);opacity:0;transition:.3s}
+.grid-opt:hover::after{opacity:1}
+.grid-opt:hover{border-color:var(--acc2);background:rgba(255,0,234,0.1)}
+.grid-opt.active{border-color:var(--acc2);background:rgba(255,0,234,0.15);box-shadow:0 0 15px rgba(255,0,234,0.3)}
+.grid-opt b{display:block;font-size:16px;color:var(--txt);margin-bottom:4px;position:relative;z-index:1}
+.grid-opt small{font-size:11px;color:var(--muted);font-weight:600;position:relative;z-index:1}
+.grid-opt span{display:block;font-size:13px;font-weight:800;color:var(--acc3);margin-top:6px;position:relative;z-index:1}
+
+/* QRIS */
+.qris-box{position:relative;overflow:hidden;border-radius:16px;border:1px solid var(--acc);background:#fff;padding:10px;margin-bottom:16px}
+.qris-box img{width:100%;display:block;border-radius:8px}
+.scanline{position:absolute;left:10px;right:10px;height:4px;border-radius:4px;background:linear-gradient(90deg,transparent,var(--acc),transparent);box-shadow:0 0 20px 4px var(--acc);animation:scan 2.5s linear infinite}
+@keyframes scan{0%{top:10px}50%{top:calc(100% - 14px)}100%{top:10px}}
+.pay-info{background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:14px 16px;margin-bottom:16px}
+.pay-info>div{display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;font-weight:600}
+.pay-info>div+div{border-top:1px dashed rgba(255,255,255,0.1)}
+.pay-info span{color:var(--muted)}
+.pay-info b{font-weight:700;font-family:'Share Tech Mono',monospace;color:var(--acc)}
+
+/* HACKER PROCESS ANIM */
+.proc{text-align:center;padding:10px 0;position:relative}
+.hacker-screen{background:#000;border:1px solid var(--acc);border-radius:12px;padding:16px;margin:16px 0;font-family:'Share Tech Mono',monospace;font-size:13px;color:var(--acc3);text-align:left;line-height:1.8;height:150px;overflow:hidden;position:relative;box-shadow:inset 0 0 30px rgba(0,255,136,0.1)}
+.hacker-screen::after{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.25) 50%);background-size:100% 4px;pointer-events:none}
+.hacker-line{opacity:0;animation:typeLine 0.5s ease forwards}
+.hacker-line::before{content:'> ';color:var(--acc)}
+@keyframes typeLine{to{opacity:1}}
+.proc-ring{width:80px;height:80px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;background:rgba(0,243,255,0.05);border:2px dashed var(--acc);animation:spin 2s linear infinite;box-shadow:0 0 30px rgba(0,243,255,0.2)}
+.proc-ring .material-icons-round{font-size:36px;color:var(--acc);animation:pulse 1s ease-in-out infinite}
+
+/* RESULT & RARITY */
+.result-ic{width:90px;height:90px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;animation:pop .5s cubic-bezier(.2,.9,.3,1.5)}
+.result-ic.ok{background:rgba(0,255,136,0.1);border:2px solid var(--acc3);box-shadow:0 0 30px rgba(0,255,136,0.3)}
+.result-ic.ok .material-icons-round{font-size:44px;color:var(--acc3)}
+.result-ic.zonk{background:rgba(255,0,68,0.1);border:2px solid var(--danger);box-shadow:0 0 30px rgba(255,0,68,0.3)}
+.result-ic.zonk .material-icons-round{font-size:44px;color:var(--danger)}
+.rarity-tag{display:inline-block;padding:4px 10px;border-radius:6px;font-size:12px;font-weight:800;letter-spacing:1px;margin-bottom:10px;text-transform:uppercase}
+.rarity-Common{background:rgba(160,160,160,0.2);color:var(--rarity-common);border:1px solid var(--rarity-common)}
+.rarity-Rare{background:rgba(0,170,255,0.2);color:var(--rarity-rare);border:1px solid var(--rarity-rare);box-shadow:0 0 10px rgba(0,170,255,0.3)}
+.rarity-Epic{background:rgba(170,0,255,0.2);color:var(--rarity-epic);border:1px solid var(--rarity-epic);box-shadow:0 0 10px rgba(170,0,255,0.3)}
+.rarity-Legendary{background:rgba(255,170,0,0.2);color:var(--rarity-legendary);border:1px solid var(--rarity-legendary);box-shadow:0 0 15px rgba(255,170,0,0.5);animation:pulse 1s infinite}
+
+/* TOAST */
+.toast{position:fixed;left:50%;bottom:110px;transform:translateX(-50%) translateY(20px);z-index:300;display:flex;align-items:center;gap:10px;background:rgba(10,15,25,0.95);border:1px solid var(--line);border-radius:12px;padding:14px 20px;font-size:13px;font-weight:600;max-width:88vw;box-shadow:0 10px 30px rgba(0,0,0,0.8);opacity:0;transition:.3s cubic-bezier(.2,.9,.3,1.3)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .material-icons-round{font-size:20px;color:var(--acc3);flex-shrink:0}
+.toast.err .material-icons-round{color:var(--danger)}
+.toast.err{border-color:var(--danger)}
+
+/* FAQ */
+.faq-item{background:rgba(13,20,33,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:.3s}
+.faq-item.open{border-color:var(--acc)}
+.faq-q{width:100%;display:flex;align-items:center;gap:12px;padding:16px;background:none;border:none;color:var(--txt);font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;text-align:left}
+.faq-q .material-icons-round{font-size:20px;color:var(--acc);flex-shrink:0}
+.faq-q .arrow{margin-left:auto;color:var(--muted);transition:.3s}
+.faq-item.open .arrow{transform:rotate(180deg);color:var(--acc)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.faq-a p{padding:0 16px 16px 48px;font-size:13px;color:var(--muted);line-height:1.7;font-weight:500}
+
+/* ADMIN TABS */
+.admin-tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px;margin-bottom:16px;border-bottom:1px solid var(--line);scrollbar-width:none}
+.admin-tab{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px 16px;font-family:inherit;font-weight:700;font-size:12px;color:var(--muted);white-space:nowrap;cursor:pointer;transition:.3s;display:flex;align-items:center;gap:6px}
+.admin-tab.active{background:rgba(0,243,255,0.15);border-color:var(--acc);color:var(--acc)}
+.admin-tab .material-icons-round{font-size:16px}
+.admin-content{display:none;animation:fadeUp .3s ease}
+.admin-content.active{display:block}
+
+/* STATS */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-box{background:rgba(13,20,33,0.6);border:1px solid rgba(255,255,255,0.05);border-radius:14px;padding:14px 8px;text-align:center}
+.stat-box b{display:block;font-size:20px;font-weight:700;color:var(--acc3);font-family:'Share Tech Mono',monospace}
+.stat-box span{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:1px;margin-top:4px;display:block}
+.hidden{display:none !important}
+</style>
+</head>
+<body>
+
+<div class="bgfx"><span></span><span></span><span></span></div>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div class="auth" id="authScreen">
+  <div class="auth-card">
+    <div class="auth-logo"><span class="material-icons-round">memory</span></div>
+    <h2>ROMBAK MELLY <span>V7</span></h2>
+    <p class="auth-sub">Advanced Script Remaker Engine</p>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Login</button>
+      <button class="auth-tab" data-tab="register">Register</button>
+    </div>
+
+    <form class="auth-form active" id="formLogin">
+      <label class="fld">
+        <span class="material-icons-round">fingerprint</span>
+        <input type="text" id="loginUser" placeholder="Username / Email" autocomplete="username">
+      </label>
+      <label class="fld">
+        <span class="material-icons-round">key</span>
+        <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+        <button type="button" class="eye" data-eye="loginPass"><span class="material-icons-round">visibility_off</span></button>
+      </label>
+      <button class="btn btn-primary" type="submit" style="margin-top:10px">
+        <span class="material-icons-round">login</span> Akses Sistem
+      </button>
+    </form>
+
+    <form class="auth-form" id="formRegister">
+      <label class="fld">
+        <span class="material-icons-round">badge</span>
+        <input type="text" id="regNama" placeholder="Nama Lengkap">
+      </label>
+      <label class="fld">
+        <span class="material-icons-round">person</span>
+        <input type="text" id="regUser" placeholder="Username">
+      </label>
+      <label class="fld">
+        <span class="material-icons-round">mail</span>
+        <input type="email" id="regEmail" placeholder="Email (@gmail.com)">
+      </label>
+      <label class="fld">
+        <span class="material-icons-round">lock</span>
+        <input type="password" id="regPass" placeholder="Password">
+        <button type="button" class="eye" data-eye="regPass"><span class="material-icons-round">visibility_off</span></button>
+      </label>
+      <label class="fld">
+        <span class="material-icons-round">lock_reset</span>
+        <input type="password" id="regPass2" placeholder="Konfirmasi Password">
+        <button type="button" class="eye" data-eye="regPass2"><span class="material-icons-round">visibility_off</span></button>
+      </label>
+      <button class="btn btn-primary" type="submit" style="margin-top:10px">
+        <span class="material-icons-round">how_to_reg</span> Daftar Sistem
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ APP SHELL ============ -->
+<div class="app hidden" id="appShell">
+
+  <header class="topbar">
+    <button class="ic-btn" id="btnMenu" aria-label="Menu"><span class="material-icons-round">menu</span></button>
+    <div class="brand">
+      <div class="brand-logo"><span class="material-icons-round">memory</span></div>
+      <div>
+        <h1>ROMBAK MELLY</h1>
+        <p>OFFICIAL v7</p>
+      </div>
+    </div>
+    <button class="ic-btn" onclick="showNotif()" style="margin-right:auto;margin-left:10px;width:38px;height:38px">
+      <span class="material-icons-round" style="font-size:20px;animation:pulse 1s infinite alternate">notifications_active</span>
+      <div class="badge hidden" id="notifBadge">0</div>
+    </button>
+    <div class="poin-chip">
+      <span class="material-icons-round">toll</span>
+      <b id="poinVal">0</b>
+    </div>
+  </header>
+
+  <main>
+    <!-- HOME -->
+    <section class="page active" id="page-home">
+      
+      <!-- AUTO ROMBAK WIDGET (HIDDEN BY DEFAULT) -->
+      <div id="autoWidget" class="auto-widget hidden">
+        <div class="auto-widget-ic"><span class="material-icons-round">bolt</span></div>
+        <div class="auto-widget-info">
+          <h4>AUTO ROMBAK ACTIVE</h4>
+          <p id="autoStatusText">System is scanning in background...</p>
+        </div>
+        <div class="auto-widget-timer" id="autoTimer">00:00</div>
+      </div>
+
+      <div class="hero">
+        <div class="hero-top">
+          <div>
+            <p class="hero-greet" id="homeGreet">System Online</p>
+            <h2 class="hero-title">ROMBAK MELLY</h2>
+            <span class="role-badge" id="homeRole">MEMBER</span>
+          </div>
+          <div class="hero-poin">
+            <span class="material-icons-round">toll</span>
+            <b id="homePoin">0</b>
+            <small>POIN</small>
+          </div>
+        </div>
+        
+        <div class="action-grid">
+          <button class="action-btn action-rombak" onclick="openRombakModal()">
+            <span class="material-icons-round">autorenew</span>
+            <span>ROMBAK MANUAL</span>
+            <small>Biaya: 30 Poin</small>
+          </button>
+          <button class="action-btn action-auto" onclick="openAutoRombakModal()">
+            <span class="material-icons-round">bolt</span>
+            <span>AUTO ROMBAK</span>
+            <small>Mulai: 70 Poin</small>
+          </button>
+        </div>
+      </div>
+
+      <div class="quick">
+        <button class="quick-card" onclick="navigate('deposit')">
+          <span class="material-icons-round">account_balance_wallet</span><span>Deposit<br>Poin</span>
+        </button>
+        <button class="quick-card" onclick="navigate('riwayat')">
+          <span class="material-icons-round">history</span><span>Riwayat<br>Script</span>
+        </button>
+        <button class="quick-card" onclick="navigate('redeem')">
+          <span class="material-icons-round">redeem</span><span>Redeem<br>Token</span>
+        </button>
+      </div>
+
+      <div class="sec-head">
+        <h3>Database Script</h3>
+        <span class="pill" id="scriptCount">0 Data</span>
+      </div>
+      <div class="list" id="scriptList"></div>
+    </section>
+
+    <!-- DEPOSIT -->
+    <section class="page" id="page-deposit">
+      <div class="sec-head"><h3>Top Up Poin</h3></div>
+      <div class="paket-grid" id="paketGrid"></div>
+      
+      <div class="sec-head" style="margin-top:30px">
+        <h3>Log Pesanan</h3>
+        <span class="pill" id="orderCount">0</span>
+      </div>
+      <div class="list" id="orderList"></div>
+    </section>
+
+    <!-- RIWAYAT -->
+    <section class="page" id="page-riwayat">
+      <div class="sec-head">
+        <h3>Data Riwayat</h3>
+        <span class="pill" id="riwayatCount">0</span>
+      </div>
+      <div class="list" id="riwayatList"></div>
+    </section>
+
+    <!-- REDEEM -->
+    <section class="page" id="page-redeem">
+      <div class="card" style="text-align:center">
+        <span class="material-icons-round" style="font-size:60px;color:var(--acc2);margin-bottom:10px;filter:drop-shadow(0 0 10px var(--acc2));animation:float 2s infinite alternate">card_giftcard</span>
+        <h3 class="modal-title">Redeem Token</h3>
+        <p class="modal-sub">Masukkan token untuk mendapatkan role premium atau poin gratis.</p>
+        
+        <!-- FORM REDEEM DENGAN BUTTON TEMPEL -->
+        <label class="fld" style="margin-top:20px; position:relative">
+          <span class="material-icons-round">vpn_key</span>
+          <input type="text" id="inRedeem" placeholder="MELLY-XXXX-XXXX" style="text-transform:uppercase;letter-spacing:2px;text-align:center;font-family:'Share Tech Mono',monospace">
+          <button class="mini-btn" onclick="pasteRedeem()" title="Tempel Token" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:rgba(0,243,255,0.1);border-color:var(--acc)">
+            <span class="material-icons-round" style="color:var(--acc)">content_paste</span>
+          </button>
+        </label>
+        
+        <button class="btn btn-secondary" onclick="prosesRedeem()" style="margin-top:10px">
+          <span class="material-icons-round">verified</span> Klaim Token
+        </button>
+      </div>
+    </section>
+
+    <!-- PROFIL -->
+    <section class="page" id="page-profil">
+      <div class="prof-card">
+        <div class="prof-avatar" id="profAvatar">
+          <span class="material-icons-round">person</span>
+          <div class="cam"><span class="material-icons-round">photo_camera</span></div>
+          <input type="file" id="inFoto" accept="image/*" hidden>
+        </div>
+        <h3 class="prof-name" id="profNama">Nama</h3>
+        <p class="prof-user" id="profUser">@username</p>
+        <div style="margin-top:12px"><span class="role-badge" id="profRole">MEMBER</span></div>
+        
+        <div class="prof-stats">
+          <div class="prof-stat-box">
+            <span>Email</span>
+            <b id="profEmail" style="font-size:12px">-</b>
+          </div>
+          <div class="prof-stat-box">
+            <span>Masa Role</span>
+            <b id="profExpire">Permanen</b>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-prof" onclick="editNama()">
+        <span class="material-icons-round">edit</span> Ubah Nama
+      </button>
+      <button class="btn-prof" onclick="navigate('faq')">
+        <span class="material-icons-round">help_outline</span> Bantuan / FAQ
+      </button>
+      <button class="btn-prof danger" onclick="logout()">
+        <span class="material-icons-round">power_settings_new</span> Keluar Sistem
+      </button>
+    </section>
+
+    <!-- FAQ -->
+    <section class="page" id="page-faq">
+      <div class="sec-head"><h3>Bantuan & FAQ</h3></div>
+      <div id="faqList"></div>
+    </section>
+
+    <!-- ADMIN -->
+    <section class="page" id="page-admin">
+      <div class="sec-head"><h3>Developer Panel</h3><span class="pill" style="background:rgba(255,0,234,0.1);color:var(--acc2);border-color:var(--acc2)">DEV MODE</span></div>
+      
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchAdminTab('script', this)"><span class="material-icons-round">code</span> Script</button>
+        <button class="admin-tab" onclick="switchAdminTab('redeem', this)"><span class="material-icons-round">card_giftcard</span> Redeem</button>
+        <button class="admin-tab" onclick="switchAdminTab('trx', this)"><span class="material-icons-round">receipt_long</span> Transaksi</button>
+        <button class="admin-tab" onclick="switchAdminTab('users', this)"><span class="material-icons-round">manage_accounts</span> Users</button>
+      </div>
+
+      <!-- ADMIN TAB: SCRIPT -->
+      <div class="admin-content active" id="adm-content-script">
+        <div class="stat-grid">
+          <div class="stat-box"><b id="admUsers">0</b><span>USERS</span></div>
+          <div class="stat-box"><b id="admOrders">0</b><span>PENDING</span></div>
+          <div class="stat-box"><b id="admScripts">0</b><span>SCRIPTS</span></div>
+        </div>
+        <div class="card">
+          <h3 class="card-title"><span class="material-icons-round">terminal</span> Tambah Script Global</h3>
+          <p class="hint" style="margin-bottom:10px"><span class="material-icons-round">info</span> Masukkan script murni (Python, Lua, JS, dll). Sistem tidak akan mengubah kode asli Anda.</p>
+          <label class="fld"><span class="material-icons-round">label</span><input type="text" id="inNamaScript" placeholder="Nama Script"></label>
+          <label class="fld" style="align-items:flex-start"><span class="material-icons-round">code</span><textarea id="inKodeScript" placeholder="// Paste raw code here..."></textarea></label>
+          
+          <div style="display:flex;gap:10px;margin-bottom:10px">
+            <label class="btn btn-ghost" style="flex:1;margin:0;cursor:pointer"><span class="material-icons-round">upload_file</span> Upload File<input type="file" id="inFileScript" hidden></label>
+            <button class="btn btn-ghost" style="flex:1;margin:0" onclick="pasteScript()"><span class="material-icons-round">content_paste</span> Tempel</button>
+          </div>
+          
+          <button class="btn btn-primary" id="btnSimpanScript"><span class="material-icons-round">save</span> Simpan Script</button>
+        </div>
+      </div>
+
+      <!-- ADMIN TAB: REDEEM -->
+      <div class="admin-content" id="adm-content-redeem">
+        <div class="card">
+          <h3 class="card-title"><span class="material-icons-round">card_giftcard</span> Buat Token Redeem</h3>
+          
+          <p class="hint" style="margin-top:0;margin-bottom:8px">Pilih Hadiah:</p>
+          <div class="grid-select" id="rewardGrid">
+            <div class="grid-opt active" onclick="pilihReward('premium', this)"><b>Premium</b><small>Role VIP</small></div>
+            <div class="grid-opt" onclick="pilihReward('reseller', this)"><b>Reseller</b><small>Role Reseller</small></div>
+            <div class="grid-opt" onclick="pilihReward('admin', this)"><b>Admin</b><small>Role Admin</small></div>
+            <div class="grid-opt" onclick="pilihReward('poin', this)"><b>Poin</b><small>+1000 Poin</small></div>
+          </div>
+
+          <label class="fld" style="flex-direction:column;align-items:stretch;gap:8px">
+            <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px">DURASI ROLE (HARI)</span>
+            <input type="number" id="inDurasiRedeem" value="7" min="1" style="background:transparent;border:none;color:#fff;font-size:14px;font-weight:700;outline:none">
+          </label>
+          <label class="fld" style="flex-direction:column;align-items:stretch;gap:8px">
+            <span style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:1px">MAKSIMAL PENGGUNA</span>
+            <input type="number" id="inMaxRedeem" value="1" min="1" style="background:transparent;border:none;color:#fff;font-size:14px;font-weight:700;outline:none">
+          </label>
+          <button class="btn btn-secondary" onclick="buatRedeem()"><span class="material-icons-round">add</span> Generate Token</button>
+          <div id="redeemResult" style="margin-top:15px;display:none;text-align:center;background:rgba(0,0,0,0.5);padding:15px;border-radius:12px;border:1px dashed var(--acc2)">
+            <span style="font-size:11px;color:var(--muted)">TOKEN BERHASIL DIBUAT:</span>
+            <h4 id="tokenResult" style="font-family:'Share Tech Mono',monospace;font-size:20px;color:var(--acc2);margin-top:5px;letter-spacing:2px">XXXX</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN TAB: TRANSAKSI -->
+      <div class="admin-content" id="adm-content-trx">
+        <div class="sec-head" style="margin-top:0"><h3>Verifikasi Transaksi</h3></div>
+        <div id="admOrderList"></div>
+      </div>
+
+      <!-- ADMIN TAB: USERS -->
+      <div class="admin-content" id="adm-content-users">
+        <div class="card">
+          <h3 class="card-title"><span class="material-icons-round">manage_accounts</span> Manajemen User</h3>
+          <div class="list" id="admUserList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottomnav">
+    <div class="bottomnav-inner">
+      <button class="nav-item active" data-page="home" onclick="navigate('home')"><span class="material-icons-round">home</span><span>Home</span></button>
+      <button class="nav-item" data-page="deposit" onclick="navigate('deposit')"><span class="material-icons-round">account_balance_wallet</span><span>Deposit</span></button>
+      <button class="nav-item" data-page="riwayat" onclick="navigate('riwayat')"><span class="material-icons-round">history</span><span>Riwayat</span></button>
+      <button class="nav-item" data-page="profil" onclick="navigate('profil')"><span class="material-icons-round">person</span><span>Profil</span></button>
+    </div>
+  </nav>
+</div>
+
+<!-- DRAWER -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+<aside class="drawer" id="drawer">
+  <div class="drawer-head">
+    <div class="drawer-avatar" id="drAvatar"><span class="material-icons-round">person</span></div>
+    <div style="min-width:0">
+      <h4 id="drNama">User</h4>
+      <p id="drEmail">-</p>
+    </div>
+  </div>
+
+  <div class="dr-label">MAIN MENU</div>
+  <button class="dr-item" onclick="navigate('home')"><span class="material-icons-round">home</span> Home</button>
+  <button class="dr-item" onclick="navigate('deposit')"><span class="material-icons-round">account_balance_wallet</span> Deposit Poin</button>
+  <button class="dr-item" onclick="navigate('riwayat')"><span class="material-icons-round">history</span> Riwayat Script</button>
+  <button class="dr-item" onclick="navigate('redeem')"><span class="material-icons-round">card_giftcard</span> Redeem Token</button>
+  <button class="dr-item" onclick="navigate('profil')"><span class="material-icons-round">person</span> Profil Saya</button>
+  <button class="dr-item" onclick="navigate('faq')"><span class="material-icons-round">help_outline</span> Bantuan / FAQ</button>
+
+  <div class="dr-label">COMMUNITY</div>
+  <a class="dr-item tg" href="https://t.me/infobase_melly" target="_blank" style="text-decoration:none"><span class="material-icons-round">send</span> Channel Info Melly</a>
+  <a class="dr-item tg" href="https://t.me/testimoni_melly" target="_blank" style="text-decoration:none"><span class="material-icons-round">verified</span> Channel Testimoni</a>
+  <a class="dr-item tg" href="https://t.me/Melly_officially" target="_blank" style="text-decoration:none"><span class="material-icons-round">support_agent</span> Developer Melly</a>
+
+  <div id="drAdminWrap" class="hidden">
+    <div class="dr-label">SYSTEM</div>
+    <button class="dr-item dev" onclick="navigate('admin')"><span class="material-icons-round">admin_panel_settings</span> Panel Admin</button>
+  </div>
+
+  <div class="dr-label">SESSION</div>
+  <button class="dr-item out" onclick="logout()"><span class="material-icons-round">power_settings_new</span> Keluar Akun</button>
+</aside>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal-card" id="modalCard"></div>
+</div>
+
+<script>
+/* =========================================================
+   ROMBAK MELLY OFFICIAL — V7 ENGINE
+   ========================================================= */
+const DB_KEY   = 'MELLY_DB_V7';
+const QRIS_IMG = 'https://files.catbox.moe/4tl8vy.jpg';
+
+const FIRST_DEV = {
+  username : 'BRENGSEK MANZZ',
+  nama     : 'BRENGSEK MANZZ',
+  email    : 'brengsekmanzz007@gmail.com',
+  password : 'BRENGSEK MANZZ 007'
+};
+
+const PAKET = [
+  { id:'p5',   harga:5000,   poin:50   },
+  { id:'p10',  harga:10000,  poin:110  },
+  { id:'p20',  harga:20000,  poin:250  },
+  { id:'p50',  harga:50000,  poin:700  },
+  { id:'p100', harga:100000, poin:1500 },
+  { id:'p200', harga:200000, poin:3200 },
+  { id:'p500', harga:500000, poin:8500 }
+];
+
+const AUTO_PAKET = [
+  { menit:1,  harga:70 },
+  { menit:3,  harga:130 },
+  { menit:5,  harga:190 },
+  { menit:10, harga:350 },
+  { menit:15, harga:500 }
+];
+
+let DB = null;
+let ME = null;
+let pendingOrder = null;
+let currentPage = 'home';
+let selectedReward = 'premium';
+
+// Auto Rombak State
+let autoEndTime = null;
+let autoInterval = null;
+let autoTickInterval = null;
+let autoNextActionTime = null;
+
+/* ---------- STORAGE & FIREBASE ---------- */
+function saveDB(){ 
+  try{ 
+    localStorage.setItem(DB_KEY, JSON.stringify(DB)); 
+    // Sinkronisasi ke Firebase
+    if(window.firebaseDB && window.firebaseSet && window.firebaseRef){
+      window.firebaseSet(window.firebaseRef(window.firebaseDB, 'melly_official_db'), DB).catch(e=>console.log('Firebase sync error:', e));
+    }
+  }catch(e){} 
+}
+
+function loadDB(){
+  let raw = null;
+  try{ raw = JSON.parse(localStorage.getItem(DB_KEY)); }catch(e){ raw = null; }
+  
+  if(!raw || !raw.users || raw.users.length === 0){
+    const dev = {
+      id: 'dev-master', nama: FIRST_DEV.nama, username: FIRST_DEV.username, email: FIRST_DEV.email,
+      password: FIRST_DEV.password, role: 'developer', isFirstDev: true, roleExpire: null,
+      poin: 999999, foto: '', dev: true, createdAt: Date.now()
+    };
+    raw = { users:[dev], scripts:[], riwayat:[], orders:[], redeem:[], notifs:[], session:null };
+  }
+  
+  raw.users    = raw.users    || [];
+  raw.scripts  = raw.scripts  || [];
+  raw.riwayat  = raw.riwayat  || [];
+  raw.orders   = raw.orders   || [];
+  raw.redeem   = raw.redeem   || [];
+  raw.notifs   = raw.notifs   || [];
+  DB = raw;
+  saveDB();
+}
+
+function uid(p){ return p + '-' + Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
+function fmtDate(ts){ const d = new Date(ts); const p = n => String(n).padStart(2,'0'); return p(d.getDate()) + '/' + p(d.getMonth()+1) + '/' + d.getFullYear() + ' • ' + p(d.getHours()) + ':' + p(d.getMinutes()); }
+function rupiah(n){ return 'Rp ' + n.toLocaleString('id-ID'); }
+function esc(s){ return String(s==null?'':s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ---------- TOAST ---------- */
+function toast(msg, type){
+  const t = document.createElement('div');
+  t.className = 'toast ' + (type||'');
+  const ic = type==='err' ? 'error' : type==='ok' ? 'check_circle' : 'info';
+  t.innerHTML = '<span class="material-icons-round">'+ic+'</span><span>'+esc(msg)+'</span>';
+  document.body.appendChild(t);
+  requestAnimationFrame(()=> t.classList.add('show'));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),400); }, 3000);
+}
+
+/* ---------- NOTIF SYSTEM ---------- */
+function addNotif(text){
+  DB.notifs.push({ id: uid('ntf'), text, time: Date.now() });
+  saveDB();
+  renderNotifBadge();
+}
+
+function renderNotifBadge(){
+  const badge = document.getElementById('notifBadge');
+  if(!badge) return;
+  const now = Date.now();
+  DB.notifs = DB.notifs.filter(n => now - n.time < 120000); // Hapus 2 menit
+  saveDB();
+
+  if(DB.notifs.length > 0){
+    badge.textContent = DB.notifs.length;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function showNotif(){
+  const list = DB.notifs.length === 0 
+    ? '<div class="empty" style="padding:20px"><span class="material-icons-round">notifications_off</span>Tidak ada notifikasi</div>'
+    : DB.notifs.map(n => `
+      <div class="notif-hologram">
+        <div class="notif-text">${esc(n.text)}</div>
+        <span class="notif-time">${new Date(n.time).toLocaleTimeString('id-ID')}</span>
+      </div>`).join('');
+    
+  showModal(
+    '<h3 class="modal-title" style="color:var(--acc)">SYSTEM NOTIFICATIONS</h3>' +
+    '<div style="max-height:300px;overflow-y:auto;margin-bottom:15px">' + list + '</div>' +
+    '<button class="btn btn-ghost" onclick="closeModal()">Tutup</button>'
+  );
+}
+
+/* ---------- MODAL ---------- */
+function showModal(html){ document.getElementById('modalCard').innerHTML = html; document.getElementById('modalOverlay').classList.add('show'); }
+function closeModal(){ document.getElementById('modalOverlay').classList.remove('show'); }
+document.getElementById('modalOverlay').addEventListener('click', e=>{ if(e.target.id === 'modalOverlay') closeModal(); });
+
+/* ---------- ROLE & AUTH ---------- */
+function roleLabel(r){ return String(r||'member').toUpperCase(); }
+function roleClass(r){ return ['developer','admin','premium','reseller'].includes(r) ? r : ''; }
+
+function cekRoleExpired(){
+  let changed = false; const now = Date.now();
+  DB.users.forEach(u=>{
+    if(u.dev) return;
+    if(u.role !== 'member' && u.roleExpire && now > u.roleExpire){
+      u.role = 'member'; u.roleExpire = null; changed = true;
+    }
+  });
+  if(changed){ saveDB(); if(ME) updateAllUI(); }
+}
+
+document.querySelectorAll('.auth-tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.auth-tab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
+    document.querySelectorAll('.auth-form').forEach(f=>f.classList.remove('active'));
+    document.getElementById(tab.dataset.tab === 'login' ? 'formLogin' : 'formRegister').classList.add('active');
+  });
+});
+document.querySelectorAll('.eye').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    const inp = document.getElementById(btn.dataset.eye); const ic = btn.querySelector('.material-icons-round');
+    if(inp.type === 'password'){ inp.type = 'text'; ic.textContent = 'visibility'; }
+    else { inp.type = 'password'; ic.textContent = 'visibility_off'; }
+  });
+});
+
+document.getElementById('formLogin').addEventListener('submit', e=>{
+  e.preventDefault();
+  const id = document.getElementById('loginUser').value.trim(); const pw = document.getElementById('loginPass').value;
+  if(!id || !pw) return toast('Isi kredensial!','err');
+  const u = DB.users.find(x => (x.username.toLowerCase() === id.toLowerCase() || x.email.toLowerCase() === id.toLowerCase()) && x.password === pw);
+  if(!u) return toast('Kredensial tidak valid!','err');
+  DB.session = u.id; saveDB(); ME = u; enterApp(); toast('Autentikasi Berhasil','ok');
+});
+
+document.getElementById('formRegister').addEventListener('submit', e=>{
+  e.preventDefault();
+  const nama = document.getElementById('regNama').value.trim(); const user = document.getElementById('regUser').value.trim();
+  const email = document.getElementById('regEmail').value.trim(); const pw = document.getElementById('regPass').value;
+  const pw2 = document.getElementById('regPass2').value;
+  if(!nama || !user || !email || !pw) return toast('Semua kolom wajib diisi','err');
+  if(pw.length < 6) return toast('Password minimal 6 karakter','err');
+  if(pw !== pw2) return toast('Konfirmasi password salah','err');
+  if(!email.toLowerCase().endsWith('@gmail.com')) return toast('Email wajib @gmail.com!','err');
+  if(DB.users.some(u=>u.username.toLowerCase() === user.toLowerCase())) return toast('Username sudah dipakai','err');
+  const u = { id: uid('usr'), nama, username: user, email, password: pw, role: 'member', roleExpire: null, isFirstDev: false, poin: 0, foto: '', dev: false, createdAt: Date.now() };
+  DB.users.push(u); DB.session = u.id; saveDB(); ME = u; enterApp(); toast('Registrasi Berhasil','ok');
+});
+
+function enterApp(){
+  document.getElementById('authScreen').classList.add('hidden');
+  document.getElementById('appShell').classList.remove('hidden');
+  document.getElementById('drAdminWrap').classList.toggle('hidden', !(ME && ME.role === 'developer'));
+  updateAllUI(); navigate('home');
+  renderNotifBadge();
+  
+  if(autoEndTime && autoEndTime > Date.now()) {
+    document.getElementById('autoWidget').classList.remove('hidden');
+  } else {
+    autoEndTime = null;
+  }
+
+  setInterval(() => {
+    if(ME) renderNotifBadge();
+  }, 10000);
+}
+
+function logout(){
+  showModal('<div class="result-ic zonk"><span class="material-icons-round">power_settings_new</span></div><h3 class="modal-title">Keluar Sistem?</h3><p class="modal-sub">Sesi Anda akan diakhiri.</p><button class="btn btn-danger" onclick="doLogout()" style="margin-bottom:10px">Ya, Keluar</button><button class="btn btn-ghost" onclick="closeModal()">Batal</button>');
+}
+function doLogout(){
+  DB.session = null; saveDB(); ME = null; closeModal();
+  document.getElementById('appShell').classList.add('hidden'); document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('loginPass').value = ''; toast('Sesi berakhir');
+}
+
+function navigate(page){
+  if(page === 'admin' && (!ME || ME.role !== 'developer')) page = 'home';
+  currentPage = page;
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page === page));
+  closeDrawer(); window.scrollTo({top:0, behavior:'smooth'});
+  if(page === 'home') renderHome();
+  if(page === 'riwayat') renderRiwayat();
+  if(page === 'profil') renderProfil();
+  if(page === 'deposit') renderDeposit();
+  if(page === 'admin') renderAdmin();
+  if(page === 'faq') renderFAQ();
+}
+
+function openDrawer(){ document.getElementById('drawer').classList.add('show'); document.getElementById('drawerOverlay').classList.add('show'); }
+function closeDrawer(){ document.getElementById('drawer').classList.remove('show'); document.getElementById('drawerOverlay').classList.remove('show'); }
+document.getElementById('btnMenu').addEventListener('click', openDrawer);
+document.getElementById('drawerOverlay').addEventListener('click', closeDrawer);
+
+function updateAllUI(){
+  if(!ME) return; cekRoleExpired();
+  document.getElementById('poinVal').textContent = ME.poin;
+  document.getElementById('homePoin').textContent = ME.poin;
+  document.getElementById('drNama').textContent = ME.nama || ME.username;
+  document.getElementById('drEmail').textContent = ME.email;
+  const drAv = document.getElementById('drAvatar');
+  drAv.innerHTML = ME.foto ? '<img src="'+ME.foto+'" alt="">' : '<span class="material-icons-round">person</span>';
+  document.getElementById('drAdminWrap').classList.toggle('hidden', ME.role !== 'developer');
+  const roleEl = document.getElementById('homeRole');
+  roleEl.textContent = roleLabel(ME.role); roleEl.className = 'role-badge ' + roleClass(ME.role);
+}
+
+/* =========================================================
+   HOME & ROMBAK ACTIONS
+   ========================================================= */
+function renderHome(){
+  if(!ME) return; updateAllUI();
+  const jam = new Date().getHours();
+  const sapaan = jam < 11 ? 'Selamat pagi' : jam < 15 ? 'Selamat siang' : jam < 19 ? 'Selamat sore' : 'Selamat malam';
+  document.getElementById('homeGreet').textContent = sapaan + ', ' + (ME.nama || ME.username);
+
+  const allScripts = DB.scripts.sort((a,b)=>b.createdAt-a.createdAt);
+  document.getElementById('scriptCount').textContent = allScripts.length + ' Data';
+
+  const wrap = document.getElementById('scriptList');
+  if(allScripts.length === 0){
+    wrap.innerHTML = '<div class="empty"><span class="material-icons-round">folder_off</span>Belum ada script global.</div>';
+    return;
+  }
+
+  wrap.innerHTML = allScripts.map((s,i)=>
+    `<div class="item" style="animation-delay:${i*0.05}s">
+      <div class="item-ic"><span class="material-icons-round">code</span></div>
+      <div class="item-body">
+        <h4>${esc(s.nama)}</h4>
+        <p><span class="material-icons-round">schedule</span> ${fmtDate(s.createdAt)}</p>
+      </div>
+      ${ME.role === 'developer' ? `<div class="item-act"><button class="mini-btn danger" onclick="hapusScript('${s.id}')"><span class="material-icons-round">delete</span></button></div>` : ''}
+    </div>`
+  ).join('');
+}
+
+function openRombakModal(){
+  if(DB.scripts.length === 0) return toast('Belum ada script!','err');
+  if(ME.poin < 30) return toast('Poin tidak cukup! Butuh 30 Poin','err');
+
+  let options = DB.scripts.map(s => `<option value="${s.id}">${esc(s.nama)}</option>`).join('');
+  
+  showModal(
+    '<div class="result-ic ok"><span class="material-icons-round">autorenew</span></div>' +
+    '<h3 class="modal-title">Rombak Manual</h3>' +
+    '<p class="modal-sub">Pilih script yang ingin dirombak. Biaya: <b>30 Poin</b>.</p>' +
+    `<label class="fld" style="margin-bottom:20px"><span class="material-icons-round">list</span><select id="selScriptRombak" style="background:transparent;border:none;color:#fff;font-size:14px;outline:none;width:100%">${options}</select></label>` +
+    '<button class="btn btn-primary" onclick="mulaiRombak()"><span class="material-icons-round">bolt</span> Eksekusi</button>' +
+    '<button class="btn btn-ghost" style="margin-top:10px" onclick="closeModal()">Batal</button>'
+  );
+}
+
+function openAutoRombakModal(){
+  if(DB.scripts.length === 0) return toast('Belum ada script!','err');
+  if(autoEndTime && autoEndTime > Date.now()) return toast('Auto Rombak sedang berjalan!','err');
+  
+  let html = '<div class="result-ic ok" style="background:rgba(255,0,234,0.1);border-color:var(--acc2)"><span class="material-icons-round" style="color:var(--acc2)">bolt</span></div>';
+  html += '<h3 class="modal-title">Auto Rombak</h3>';
+  html += '<p class="modal-sub">Sistem akan merombak script secara otomatis di latar belakang. Pilih durasi:</p>';
+  
+  html += '<div class="grid-select">';
+  AUTO_PAKET.forEach(p => {
+    html += `<div class="grid-opt" onclick="konfirmasiAuto(${p.menit}, ${p.harga}, this)">
+               <b>${p.menit} Menit</b>
+               <span>${p.harga} Poin</span>
+             </div>`;
+  });
+  html += '</div>';
+  
+  html += '<button class="btn btn-ghost" onclick="closeModal()">Batal</button>';
+  showModal(html);
+}
+
+let tempAutoMenit = 0, tempAutoHarga = 0;
+function konfirmasiAuto(menit, harga, el){
+  if(ME.poin < harga) return toast('Poin tidak cukup untuk paket ini!','err');
+  
+  document.querySelectorAll('#modalCard .grid-opt').forEach(x=>x.classList.remove('active'));
+  el.classList.add('active');
+  
+  tempAutoMenit = menit;
+  tempAutoHarga = harga;
+  
+  const btnContainer = document.querySelector('#modalCard .btn-ghost');
+  btnContainer.outerHTML = `<button class="btn btn-secondary" onclick="mulaiAutoRombak(${menit}, ${harga})"><span class="material-icons-round">play_arrow</span> Mulai Auto (${harga} Poin)</button>`;
+}
+
+/* ---------- PROSES ROMBAK (HACKER STYLE) ---------- */
+function mulaiRombak(){
+  const scriptId = document.getElementById('selScriptRombak').value;
+  const s = DB.scripts.find(x => x.id === scriptId);
+  if(!s) return;
+  
+  closeModal();
+  ME.poin -= 30;
+  saveDB(); updateAllUI();
+
+  showHackerAnim(() => {
+    const zonk = Math.random() < 0.40; // 40% ZONK
+    let hasilKode = ''; let status = 'ZONK'; let rarity = '-'; let bonus = 0;
+    
+    if(!zonk){
+      status = 'SUKSES';
+      const roll = Math.random() * 100;
+      if(roll > 99) { rarity = 'Legendary'; bonus = 50; }
+      else if(roll > 95) { rarity = 'Epic'; bonus = 20; }
+      else if(roll > 80) { rarity = 'Rare'; bonus = 5; }
+      else { rarity = 'Common'; bonus = 0; }
+
+      ME.poin += bonus; 
+      
+      const stamp = Date.now().toString(36).toUpperCase();
+      // SCRIPT ASLI UTUH 100% (Hanya menambah header)
+      hasilKode = `/* ================================\n   ROMBAK MELLY OFFICIAL\n   STATUS  : SUKSES\n   RARITY  : ${rarity.toUpperCase()}\n   KEY     : MLY-${stamp}\n   ================================ */\n\n${s.kode}`;
+    } else {
+      hasilKode = '/* SYSTEM ERROR: ZONK */\n/* Script hancur. Coba lagi. */';
+    }
+
+    const entry = { id: uid('rwt'), userId: ME.id, scriptId: s.id, nama: s.nama, kode: hasilKode, status, rarity, createdAt: Date.now() };
+    DB.riwayat.push(entry); saveDB(); updateAllUI();
+
+    showModal(
+      `<div class="result-ic ${zonk?'zonk':'ok'}"><span class="material-icons-round">${zonk?'warning':'verified'}</span></div>
+      <h3 class="modal-title" style="color:${zonk?'var(--danger)':'var(--acc3)'}">${zonk ? 'ZONK!' : 'BERHASIL!'}</h3>
+      ${!zonk ? `<div class="rarity-tag rarity-${rarity}">${rarity}</div>` : ''}
+      <p class="modal-sub">${zonk ? 'Poin terpotong 30.' : `Mendapatkan script ${rarity}!`} ${bonus > 0 ? `<br>Bonus: +${bonus} Poin` : ''}<br>Sisa Poin: <b>${ME.poin}</b></p>
+      <button class="btn btn-primary" onclick="closeModal();navigate('riwayat')">Lihat Riwayat</button>`
+    );
+    renderHome();
+  });
+}
+
+function mulaiAutoRombak(menit, harga){
+  closeModal();
+  ME.poin -= harga;
+  saveDB(); updateAllUI();
+
+  showHackerAnim(() => {
+    autoEndTime = Date.now() + (menit * 60 * 1000);
+    autoNextActionTime = Date.now() + 15000; 
+    
+    toast(`Auto Rombak aktif selama ${menit} menit!`, 'ok');
+    document.getElementById('autoWidget').classList.remove('hidden');
+    
+    if(autoTickInterval) clearInterval(autoTickInterval);
+    if(autoInterval) clearInterval(autoInterval);
+
+    autoTickInterval = setInterval(() => {
+      const sisa = autoEndTime - Date.now();
+      
+      if(sisa <= 0) {
+        stopAutoRombak();
+        return;
+      }
+
+      const m = Math.floor(sisa / 60000);
+      const s = Math.floor((sisa % 60000) / 1000);
+      document.getElementById('autoTimer').textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+      if(Date.now() >= autoNextActionTime) {
+        triggerAutoRombak();
+        autoNextActionTime = Date.now() + 20000; // Setiap 20 detik
+      }
+
+    }, 1000);
+  });
+}
+
+function stopAutoRombak() {
+  if(autoInterval) clearInterval(autoInterval);
+  if(autoTickInterval) clearInterval(autoTickInterval);
+  autoEndTime = null;
+  autoNextActionTime = null;
+  autoInterval = null;
+  autoTickInterval = null;
+  document.getElementById('autoWidget').classList.add('hidden');
+  addNotif('Sesi Auto Rombak Anda telah berakhir.');
+  toast('Auto Rombak telah berhenti (Waktu Habis)', 'info');
+}
+
+function triggerAutoRombak(){
+  if(DB.scripts.length === 0 || !ME) return;
+  const s = DB.scripts[Math.floor(Math.random() * DB.scripts.length)];
+  const now = Date.now();
+  
+  const roll = Math.random() * 100;
+  let rarity = 'Common';
+  let bonus = 0;
+  
+  // AUTO ROMBAK SANGAT SUSAH (Item susah didapat)
+  if(roll > 99.8) { rarity = 'Legendary'; bonus = 30; }
+  else if(roll > 99) { rarity = 'Epic'; bonus = 15; }
+  else if(roll > 95) { rarity = 'Rare'; bonus = 5; }
+
+  ME.poin += bonus;
+  const stamp = now.toString(36).toUpperCase();
+  
+  // SCRIPT ASLI UTUH 100%
+  const hasilKode = `/* ================================\n   AUTO ROMBAK MELLY\n   STATUS  : SUKSES\n   RARITY  : ${rarity.toUpperCase()}\n   KEY     : MLY-${stamp}\n   ================================ */\n\n${s.kode}`;
+
+  DB.riwayat.push({
+    id: uid('rwt'), userId: ME.id, scriptId: s.id, nama: `[AUTO] ${s.nama}`, kode: hasilKode, status: 'SUKSES', rarity, createdAt: now
+  });
+  saveDB();
+  if(currentPage === 'riwayat') renderRiwayat();
+  updateAllUI();
+  toast(`Auto Rombak Sukses! (${rarity}) ${bonus>0?`+${bonus} Poin`:''}`, 'ok');
+}
+
+function showHackerAnim(callback) {
+  showModal(
+    '<div class="proc">' +
+      '<div class="proc-ring"><span class="material-icons-round">radar</span></div>' +
+      '<h3 class="modal-title" style="color:var(--acc)">INITIALIZING…</h3>' +
+      '<div class="hacker-screen">' +
+        '<div class="hacker-line" style="animation-delay:0.1s">Connecting to Melly Server...</div>' +
+        '<div class="hacker-line" style="animation-delay:0.6s">Bypassing firewall...</div>' +
+        '<div class="hacker-line" style="animation-delay:1.2s">Analyzing script structures...</div>' +
+        '<div class="hacker-line" style="animation-delay:1.8s">Rolling rarity algorithms...</div>' +
+        '<div class="hacker-line" style="animation-delay:2.4s">Starting background task...</div>' +
+      '</div>' +
+    '</div>'
+  );
+  setTimeout(callback, 2500);
+}
+
+/* =========================================================
+   REDEEM SYSTEM & CLIPBOARD
+   ========================================================= */
+function pasteRedeem() {
+  navigator.clipboard.readText().then(text => {
+    if(text) {
+      document.getElementById('inRedeem').value = text.trim().toUpperCase();
+      toast('Token berhasil ditempel', 'ok');
+    }
+  }).catch(err => {
+    toast('Gagal menempel. Izinkan akses clipboard.', 'err');
+  });
+}
+
+function pasteScript() {
+  navigator.clipboard.readText().then(text => {
+    if(text) {
+      document.getElementById('inKodeScript').value = text;
+      toast('Script berhasil ditempel', 'ok');
+    }
+  }).catch(err => {
+    toast('Gagal menempel. Izinkan akses clipboard.', 'err');
+  });
+}
+
+function pilihReward(type, el) {
+  selectedReward = type;
+  document.querySelectorAll('#rewardGrid .grid-opt').forEach(x => x.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function prosesRedeem(){
+  const token = document.getElementById('inRedeem').value.trim().toUpperCase();
+  if(!token) return toast('Masukkan token!','err');
+
+  const r = DB.redeem.find(x => x.token === token);
+  if(!r) return toast('Token tidak valid!','err');
+  if(r.uses >= r.maxUses) return toast('Token sudah habis!','err');
+  if(r.claimedBy.includes(ME.id)) return toast('Anda sudah pernah klaim ini!','err');
+
+  if(r.reward === 'poin'){
+    ME.poin += 1000;
+    toast('Berhasil! +1000 Poin','ok');
+  } else {
+    ME.role = r.reward;
+    ME.roleExpire = Date.now() + (r.duration * 86400000);
+    toast(`Berhasil! Role ${roleLabel(r.reward)} aktif ${r.duration} hari.`,'ok');
+  }
+
+  r.uses++;
+  r.claimedBy.push(ME.id);
+  saveDB();
+  updateAllUI();
+  document.getElementById('inRedeem').value = '';
+  
+  addNotif(`Token ${token} telah berhasil diklaim oleh ${ME.username}!`);
+}
+
+function buatRedeem(){
+  const dur = parseInt(document.getElementById('inDurasiRedeem').value, 10);
+  const max = parseInt(document.getElementById('inMaxRedeem').value, 10);
+  
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  const rand2 = Math.random().toString(36).slice(2, 6).toUpperCase();
+  const token = `MELLY-${rand}-${rand2}`;
+
+  DB.redeem.push({ token, reward: selectedReward, duration: dur, maxUses: max, uses: 0, claimedBy: [], createdAt: Date.now() });
+  saveDB();
+
+  document.getElementById('redeemResult').style.display = 'block';
+  document.getElementById('tokenResult').textContent = token;
+  
+  addNotif(`Token Redeem Baru telah dirilis! Cek halaman Redeem sekarang.`);
+  toast('Token berhasil di-generate & Notifikasi dikirim!', 'ok');
+}
+
+/* =========================================================
+   DEPOSIT / ORDER
+   ========================================================= */
+function renderDeposit(){
+  if(!ME) return;
+  const grid = document.getElementById('paketGrid');
+  
+  grid.innerHTML = PAKET.map(p =>
+    `<button class="paket" onclick="bukaOrder('${p.id}')">
+      <div class="paket-left">
+        <b>${p.poin}</b>
+        <small>POIN</small>
+      </div>
+      <div class="paket-right">
+        <span class="harga">${rupiah(p.harga)}</span>
+        <small>PAKET ${(p.harga/1000)}K</small>
+      </div>
+    </button>`
+  ).join('');
+
+  const myOrders = DB.orders.filter(o => o.userId === ME.id).sort((a,b)=>b.createdAt-a.createdAt);
+  document.getElementById('orderCount').textContent = myOrders.length + ' Log';
+  const wrap = document.getElementById('orderList');
+
+  if(myOrders.length === 0){
+    wrap.innerHTML = '<div class="empty"><span class="material-icons-round">receipt_long</span>Belum ada log pesanan.</div>'; return;
+  }
+
+  wrap.innerHTML = myOrders.map(o=>{
+    const st = o.status;
+    const ic = st === 'pending' ? 'hourglass_top' : st === 'disetujui' ? 'check_circle' : 'cancel';
+    const color = st === 'pending' ? 'var(--warn)' : st === 'disetujui' ? 'var(--acc3)' : 'var(--danger)';
+    return `<div class="item">
+      <div class="item-ic" style="border-color:${color};background:transparent"><span class="material-icons-round" style="color:${color}">${ic}</span></div>
+      <div class="item-body">
+        <h4>${o.poin} Poin • ${rupiah(o.harga)}</h4>
+        <p><span class="material-icons-round">tag</span> ${o.orderId}</p>
+        <p style="color:${color}"><span class="material-icons-round">info</span> ${st.toUpperCase()}</p>
+      </div>
+      ${st === 'pending' ? `<div class="item-act"><button class="mini-btn danger" onclick="batalkanOrder('${o.id}')"><span class="material-icons-round">close</span></button></div>` : ''}
+    </div>`;
+  }).join('');
+}
+
+function bukaOrder(paketId){
+  const p = PAKET.find(x => x.id === paketId);
+  if(!p) return;
+  const orderId = 'MLY-' + Date.now().toString().slice(-6).toUpperCase();
+  pendingOrder = { orderId: orderId, paket: p };
+
+  showModal(
+    '<h3 class="modal-title">Payment Gateway</h3>' +
+    '<p class="modal-sub">Scan QRIS untuk menyelesaikan pembayaran</p>' +
+    `<div class="qris-box"><img src="${QRIS_IMG}" alt="QRIS"><div class="scanline"></div></div>` +
+    `<div class="pay-info">
+      <div><span>ID Transaksi</span><b>${orderId}</b></div>
+      <div><span>Item</span><b>${p.poin} Poin</b></div>
+      <div><span>Total</span><b style="color:var(--acc3)">${rupiah(p.harga)}</b></div>
+    </div>` +
+    '<button class="btn btn-primary" style="margin-bottom:10px" onclick="konfirmasiBayar()"><span class="material-icons-round">verified_user</span> Saya Sudah Bayar</button>' +
+    '<button class="btn btn-ghost" onclick="closeModal()">Batalkan</button>'
+  );
+}
+
+function konfirmasiBayar(){
+  if(!pendingOrder) return;
+  const p = pendingOrder.paket;
+  DB.orders.push({ id: uid('ord'), orderId: pendingOrder.orderId, userId: ME.id, paketId: p.id, harga: p.harga, poin: p.poin, status: 'pending', createdAt: Date.now() });
+  saveDB(); pendingOrder = null; closeModal(); renderDeposit();
+  toast('Pesanan dibuat. Menunggu verifikasi Developer.','ok');
+}
+
+function batalkanOrder(id){
+  const o = DB.orders.find(x => x.id === id && x.userId === ME.id);
+  if(!o || o.status !== 'pending') return;
+  showModal('<div class="result-ic zonk"><span class="material-icons-round">cancel</span></div><h3 class="modal-title">Batalkan?</h3><p class="modal-sub">ID: '+o.orderId+'</p><button class="btn btn-danger" onclick="doBatalkan(\''+id+'\')" style="margin-bottom:10px">Ya</button><button class="btn btn-ghost" onclick="closeModal()">Tidak</button>');
+}
+function doBatalkan(id){
+  const o = DB.orders.find(x => x.id === id); if(o) o.status = 'dibatalkan';
+  saveDB(); closeModal(); renderDeposit(); toast('Dibatalkan','ok');
+}
+
+/* =========================================================
+   RIWAYAT & PROFIL
+   ========================================================= */
+function renderRiwayat(){
+  if(!ME) return;
+  const list = DB.riwayat.filter(r => r.userId === ME.id).sort((a,b)=>b.createdAt-a.createdAt);
+  document.getElementById('riwayatCount').textContent = list.length + ' Data';
+  const wrap = document.getElementById('riwayatList');
+  if(list.length === 0){ wrap.innerHTML = '<div class="empty"><span class="material-icons-round">history_toggle_off</span>Belum ada riwayat.</div>'; return; }
+
+  wrap.innerHTML = list.map((r,i)=>
+    `<div class="item" style="animation-delay:${i*0.04}s">
+      <div class="item-ic ${r.status==='ZONK'?'zonk':''}"><span class="material-icons-round">${r.status==='ZONK'?'bug_report':'task_alt'}</span></div>
+      <div class="item-body">
+        <h4>${esc(r.nama)} ${r.rarity && r.rarity !== '-' ? `<span class="rarity-tag rarity-${r.rarity}" style="padding:2px 6px;font-size:9px;margin-left:5px">${r.rarity}</span>` : ''}</h4>
+        <p><span class="material-icons-round">event</span> ${fmtDate(r.createdAt)}</p>
+        <p style="color:${r.status==='ZONK'?'var(--danger)':'var(--acc3)'}"><span class="material-icons-round">info</span> ${r.status}</p>
+      </div>
+      <div class="item-act">
+        ${r.status==='SUKSES'?`<button class="mini-btn" onclick="downloadRiwayat('${r.id}')"><span class="material-icons-round">download</span></button>`:''}
+        <button class="mini-btn danger" onclick="hapusRiwayat('${r.id}')"><span class="material-icons-round">delete</span></button>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function downloadRiwayat(id){
+  const r = DB.riwayat.find(x => x.id === id && x.userId === ME.id);
+  if(!r) return;
+  const blob = new Blob([r.kode], {type:'text/plain'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = String(r.nama).replace(/[^\w\-]+/g,'_') + '_MELLY.txt';
+  a.click(); toast('Terunduh','ok');
+}
+function hapusRiwayat(id){ DB.riwayat = DB.riwayat.filter(x => !(x.id === id && x.userId === ME.id)); saveDB(); renderRiwayat(); }
+
+function renderProfil(){
+  if(!ME) return; updateAllUI();
+  const av = document.getElementById('profAvatar');
+  av.innerHTML = (ME.foto ? '<img src="'+ME.foto+'" alt="">' : '<span class="material-icons-round">person</span>') + '<div class="cam"><span class="material-icons-round">photo_camera</span></div><input type="file" id="inFoto" accept="image/*" hidden>';
+  document.getElementById('inFoto').addEventListener('change', handleFoto);
+
+  document.getElementById('profNama').textContent = ME.nama || ME.username;
+  document.getElementById('profUser').textContent = '@' + ME.username;
+  document.getElementById('profEmail').textContent = ME.email;
+  document.getElementById('profRole').textContent = roleLabel(ME.role);
+  document.getElementById('profRole').className = 'role-badge ' + roleClass(ME.role);
+
+  const exp = document.getElementById('profExpire');
+  if(ME.dev || ME.role === 'member' || !ME.roleExpire){ exp.textContent = 'Permanen'; exp.style.color = 'var(--acc)'; }
+  else {
+    const sisa = ME.roleExpire - Date.now();
+    if(sisa <= 0){ exp.textContent = 'Habis'; exp.style.color = 'var(--danger)'; }
+    else { exp.textContent = Math.floor(sisa/86400000) + 'h ' + Math.floor((sisa%86400000)/3600000) + 'j'; exp.style.color = 'var(--warn)'; }
+  }
+}
+document.getElementById('profAvatar').addEventListener('click', ()=>{ const inp = document.getElementById('inFoto'); if(inp) inp.click(); });
+function handleFoto(e){
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader(); reader.onload = ev => { ME.foto = ev.target.result; saveDB(); renderProfil(); updateAllUI(); toast('Foto diperbarui','ok'); }; reader.readAsDataURL(f);
+}
+function editNama(){
+  showModal('<h3 class="modal-title">Ubah Nama</h3><label class="fld"><span class="material-icons-round">badge</span><input type="text" id="inEditNama" value="'+esc(ME.nama)+'"></label><button class="btn btn-primary" onclick="simpanNama()" style="margin-bottom:10px">Simpan</button><button class="btn btn-ghost" onclick="closeModal()">Batal</button>');
+}
+function simpanNama(){
+  const v = document.getElementById('inEditNama').value.trim(); if(!v) return;
+  ME.nama = v; saveDB(); closeModal(); renderProfil(); updateAllUI(); renderHome(); toast('Nama diperbarui','ok');
+}
+
+/* =========================================================
+   PANEL ADMIN
+   ========================================================= */
+function switchAdminTab(tab, btn) {
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('adm-content-' + tab).classList.add('active');
+}
+
+document.getElementById('inFileScript').addEventListener('change', function(){
+  const f = this.files[0]; if(!f) return;
+  const r = new FileReader(); r.onload = ev => { document.getElementById('inKodeScript').value = ev.target.result; if(!document.getElementById('inNamaScript').value) document.getElementById('inNamaScript').value = f.name.split('.')[0]; toast('File dimuat','ok'); }; r.readAsText(f);
+});
+
+document.getElementById('btnSimpanScript').addEventListener('click', ()=>{
+  const nama = document.getElementById('inNamaScript').value.trim();
+  const kode = document.getElementById('inKodeScript').value;
+  if(!nama || !kode) return toast('Nama dan kode wajib diisi!','err');
+  DB.scripts.push({ id: uid('scr'), userId: ME.id, nama, kode, createdAt: Date.now() });
+  saveDB();
+  document.getElementById('inNamaScript').value = ''; document.getElementById('inKodeScript').value = '';
+  toast('Script Global ditambahkan!','ok');
+  renderAdmin(); renderHome();
+});
+
+function renderAdmin(){
+  if(!ME || ME.role !== 'developer') return;
+  const users = DB.users.filter(u => !u.dev);
+  const pending = DB.orders.filter(o => o.status === 'pending');
+
+  document.getElementById('admUsers').textContent = users.length;
+  document.getElementById('admOrders').textContent = pending.length;
+  document.getElementById('admScripts').textContent = DB.scripts.length;
+
+  const ow = document.getElementById('admOrderList');
+  if(pending.length === 0){ 
+    ow.innerHTML = '<div class="empty" style="padding:20px"><span class="material-icons-round">inbox</span>Tidak ada transaksi pending.</div>'; 
+  } else {
+    ow.innerHTML = pending.map(o=>{
+      const u = DB.users.find(x=>x.id===o.userId);
+      return `<div class="receipt-card">
+        <div class="receipt-header">
+          <h4>#${o.orderId}</h4>
+          <span>PENDING</span>
+        </div>
+        <div class="receipt-body">
+          <div>
+            <span>User</span>
+            <b>${esc(u ? u.username : 'User')}</b>
+          </div>
+          <div style="text-align:right">
+            <span>Total Pembayaran</span>
+            <b style="color:var(--acc3)">${rupiah(o.harga)} (${o.poin} Poin)</b>
+          </div>
+        </div>
+        <div class="receipt-actions">
+          <button class="btn-approve" onclick="setujuiOrder('${o.id}')"><span class="material-icons-round" style="font-size:16px">check</span> APPROVE</button>
+          <button class="btn-reject" onclick="tolakOrder('${o.id}')"><span class="material-icons-round" style="font-size:16px">close</span> REJECT</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  const uw = document.getElementById('admUserList');
+  if(users.length === 0){ uw.innerHTML = '<div class="empty" style="padding:20px"><span class="material-icons-round">group_off</span>Belum ada user.</div>'; }
+  else {
+    uw.innerHTML = users.map(u=>{
+      let expTxt = 'Permanen';
+      if(u.role !== 'member' && u.roleExpire){
+        const sisa = u.roleExpire - Date.now();
+        expTxt = sisa > 0 ? Math.ceil(sisa/86400000) + ' hari' : 'Habis';
+      }
+      return `<div class="item" style="flex-wrap:wrap">
+        <div class="item-ic"><span class="material-icons-round">person</span></div>
+        <div class="item-body">
+          <h4>${esc(u.nama)} (@${esc(u.username)})</h4>
+          <p style="color:var(--acc)"><span class="material-icons-round">shield_person</span> ${roleLabel(u.role)} (${expTxt})</p>
+        </div>
+        ${ME.isFirstDev ? `<div style="display:flex;gap:8px;width:100%;margin-top:12px"><button class="btn btn-ghost btn-sm" style="flex:1" onclick="modalRole('${u.id}')">Atur Role</button></div>` : ''}
+      </div>`;
+    }).join('');
+  }
+}
+
+function setujuiOrder(id){
+  const o = DB.orders.find(x => x.id === id); if(!o || o.status !== 'pending') return;
+  const u = DB.users.find(x => x.id === o.userId);
+  o.status = 'disetujui'; if(u) u.poin += o.poin;
+  saveDB(); if(u && u.id === ME.id) updateAllUI(); renderAdmin(); toast('Disetujui','ok');
+}
+function tolakOrder(id){
+  const o = DB.orders.find(x => x.id === id); if(!o || o.status !== 'pending') return;
+  o.status = 'ditolak'; saveDB(); renderAdmin(); toast('Ditolak','ok');
+}
+
+function modalRole(userId){
+  if(!ME.isFirstDev) return;
+  const u = DB.users.find(x => x.id === userId); if(!u) return;
+  showModal(
+    '<h3 class="modal-title">Atur Role</h3>' +
+    `<label class="fld" style="flex-direction:column;align-items:stretch;gap:8px"><span style="font-size:11px;color:var(--muted)">ROLE</span><select id="selRole" style="background:transparent;border:none;color:#fff;font-size:14px;outline:none"><option value="member" ${u.role==='member'?'selected':''}>Member</option><option value="premium" ${u.role==='premium'?'selected':''}>Premium</option><option value="reseller" ${u.role==='reseller'?'selected':''}>Reseller</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></label>` +
+    `<label class="fld" style="flex-direction:column;align-items:stretch;gap:8px"><span style="font-size:11px;color:var(--muted)">DURASI (HARI)</span><input type="number" id="selDurasi" value="7" min="1" style="background:transparent;border:none;color:#fff;font-size:14px;outline:none"></label>` +
+    `<button class="btn btn-primary" onclick="simpanRole('${userId}')" style="margin-bottom:10px">Terapkan</button><button class="btn btn-ghost" onclick="closeModal()">Batal</button>`
+  );
+}
+function simpanRole(userId){
+  if(!ME.isFirstDev) return;
+  const u = DB.users.find(x => x.id === userId); if(!u) return;
+  const role = document.getElementById('selRole').value; const dur = parseInt(document.getElementById('selDurasi').value, 10);
+  u.role = role; u.roleExpire = role === 'member' ? null : Date.now() + (dur * 86400000);
+  saveDB(); closeModal(); renderAdmin(); toast('Role diterapkan','ok');
+}
+
+/* =========================================================
+   FAQ
+   ========================================================= */
+const FAQ_DATA = [
+  { q:'Apa itu ROMBAK MELLY OFFICIAL?', a:'Platform canggih untuk merombak script secara otomatis dengan sistem rarity (Common, Rare, Epic, Legendary) dan signature terenkripsi.' },
+  { q:'Berapa biaya merombak script?', a:'Biaya rombak manual adalah 30 Poin. Sedangkan Auto Rombak harganya bervariasi mulai dari 70 Poin (1 menit) hingga 500 Poin (15 menit).' },
+  { q:'Bagaimana cara top up poin?', a:'Masuk ke menu Deposit, pilih paket (5K - 500K), lalu scan QRIS. Developer akan memverifikasi dan Poin otomatis masuk.' },
+  { q:'Apa itu Auto Rombak?', a:'Fitur eksklusif di mana sistem akan merombak script secara otomatis di latar belakang. Hasil rombak akan muncul sendiri di menu Riwayat sesuai interval waktu yang berjalan.' },
+  { q:'Bagaimana cara menambah script?', a:'Hanya akun Developer (di Panel Admin) yang dapat menambahkan script ke database global. Script yang dimasukkan tidak akan diubah oleh sistem.' },
+  { q:'Apa itu Redeem Token?', a:'Token rahasia dari Developer. Anda bisa menukarnya dengan Role atau Poin gratis di menu Redeem. Notifikasi akan muncul jika ada token baru.' },
+  { q:'Bagaimana cara ganti foto profil?', a:'Buka halaman Profil, ketuk foto profil, lalu pilih gambar dari galeri perangkat Anda.' }
+];
+function renderFAQ(){
+  document.getElementById('faqList').innerHTML = FAQ_DATA.map((f,i)=>
+    `<div class="faq-item" id="faq-${i}"><button class="faq-q" onclick="toggleFAQ(${i})"><span class="material-icons-round">help</span><span>${esc(f.q)}</span><span class="material-icons-round arrow">expand_more</span></button><div class="faq-a"><p>${esc(f.a)}</p></div></div>`
+  ).join('');
+}
+function toggleFAQ(i){
+  const el = document.getElementById('faq-' + i); const ans = el.querySelector('.faq-a'); const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(x=>{ x.classList.remove('open'); x.querySelector('.faq-a').style.maxHeight = null; });
+  if(!isOpen){ el.classList.add('open'); ans.style.maxHeight = ans.scrollHeight + 'px'; }
+}
+
+/* =========================================================
+   BOOT
+   ========================================================= */
+function boot(){
+  loadDB(); cekRoleExpired();
+  if(DB.session){
+    const u = DB.users.find(x => x.id === DB.session);
+    if(u){ ME = u; enterApp(); return; }
+    DB.session = null; saveDB();
+  }
+  document.getElementById('authScreen').classList.remove('hidden');
+  document.getElementById('appShell').classList.add('hidden');
+  setInterval(()=>{ cekRoleExpired(); if(ME && currentPage === 'profil') renderProfil(); }, 15000);
+}
+document.addEventListener('DOMContentLoaded', boot);
+</script>
+</body>
+</html>
